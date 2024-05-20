@@ -2,7 +2,7 @@ import { useState } from "react";
 import Header from "./components/Header";
 
 function App() {
-  const [popup, setPopup] = useState(false);
+  const [expandedWidgets, setExpandedWidgets] = useState<number[]>([]);
   const [widgets, setWidgets] = useState<
     { type: string; x: number; y: number }[]
   >([]);
@@ -22,8 +22,12 @@ function App() {
     e.preventDefault();
   }
 
-  const OpenPopup = (index: any) => {
-    setPopup(true);
+  const handleWidgetClick = (index: number) => {
+    if (expandedWidgets.includes(index)) {
+      setExpandedWidgets(expandedWidgets.filter((i) => i !== index));
+    } else {
+      setExpandedWidgets([...expandedWidgets, index]);
+    }
   };
 
   return (
@@ -38,10 +42,18 @@ function App() {
           {widgets.map((widget, index) => (
             <div
               key={index}
-              className="absolute"
+              className="absolute cursor-pointer"
+              onClick={() => handleWidgetClick(index)}
               style={{ left: widget.x, top: widget.y }}
             >
-              {widget.type}
+              {expandedWidgets.includes(index) ? (
+                <div>
+                  <p>{widget.type}</p>
+                  <p>Additional information or detailed view here</p>
+                </div>
+              ) : (
+                widget.type
+              )}
             </div>
           ))}
         </div>
@@ -54,6 +66,21 @@ function App() {
           >
             Message
           </div>
+          {/* Uncomment and add more widgets as needed */}
+          {/* <div
+            className="widget cursor-move border border-gray-600 p-2 m-2"
+            draggable
+            onDragStart={(e) => handleOnDrag(e, "Widget B")}
+          >
+            Widget B
+          </div>
+          <div
+            className="widget cursor-move border border-gray-600 p-2 m-2"
+            draggable
+            onDragStart={(e) => handleOnDrag(e, "Widget C")}
+          >
+            Widget C
+          </div> */}
         </div>
       </div>
     </>
